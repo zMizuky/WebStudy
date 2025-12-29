@@ -277,7 +277,7 @@ const build = {
         const nextBtn = document.createElement("button");
         const weekdays = document.createElement("div");
         weekdays.classList.add("weekdays");
-        ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(day => {
+        ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"].forEach(day => {
             const dayDiv = document.createElement("div");
             dayDiv.textContent = day;
             weekdays.appendChild(dayDiv);
