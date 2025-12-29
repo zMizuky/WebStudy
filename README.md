@@ -54,7 +54,7 @@ Ele combina técnicas de estudo, sistema de progresso, conquistas desbloqueávei
 
 ---
 
-### Calendário  
+### 🗓️ Calendário  
 - Função de lembrentes de acordo com o dia no calendário
 
 ---
