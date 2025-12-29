@@ -8,6 +8,7 @@ const homePageStr = document.getElementById("HomePageStr");
 const cardPageStr = document.getElementById("CardPageStr");
 const notePageStr = document.getElementById("NotePageStr");
 const todoPageStr = document.getElementById("TodoPageStr");
+const calendarPageStr = document.getElementById("CalendarPageStr");
 
 const pomoBtn = document.querySelector(".timer div");
 
@@ -16,7 +17,7 @@ const username = getUsername();
 const taskXP = 15;
 const cardHitXP = 25;
 
-const pages = [homePageStr, cardPageStr, notePageStr, todoPageStr];
+const pages = [homePageStr, cardPageStr, notePageStr, todoPageStr, calendarPageStr];
 
 let selectedP = 0;
 
@@ -36,9 +37,113 @@ let noteWords = localStorage.getItem("noteWords") || 0;
 let cardAmount = localStorage.getItem("cardAmount") || 0;
 let cardHit = localStorage.getItem("cardPer") || 0;
 
+let selectedDay;
+
+let currentDate = new Date();
+
 const colors = {
     red: "#EA4335",
     green: "#34A853"
+}
+
+const calendar = {
+    render(date){
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const calendarDB = getDB("calendarDB");
+
+        monthYear.textContent = date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const lastDay = new Date(year, month + 1, 0).getDate();
+
+        daysContainer.innerHTML = '';
+        for (let i = 0; i < firstDay; i++) {
+            const emptyDiv = document.createElement('div');
+            daysContainer.appendChild(emptyDiv);
+        }
+        for (let i = 1; i <= lastDay; i++) {
+            const dayDiv = document.createElement('div');
+
+            const today = new Date();
+            if(i === today.getDate() && month === today.getMonth() && year === today.getFullYear()){
+                dayDiv.classList.add('today');
+            }
+
+            const dayStr = `${year}-${month + 1}-${i}`;
+
+            const hasNote = calendarDB.some(note => note.date === dayStr);
+            if(hasNote){
+                dayDiv.classList.add("has");
+            }
+
+            dayDiv.textContent = i;
+
+            dayDiv.addEventListener('click', () => {
+                const allDays = daysContainer.querySelectorAll('div');
+                allDays.forEach(d => d.classList.remove('selectedDay'));
+
+                dayDiv.classList.add("selectedDay");
+
+                selectedDay = dayStr;
+
+                this.showNotes(selectedDay);
+            });
+
+            daysContainer.appendChild(dayDiv);
+        }
+    },
+    add(){
+        const calendarDB = getDB("calendarDB");
+        let input = prompt("Qual é o nome do lembrente?");
+        let id = generateId();
+        if(!input){
+            input = `Novo lembrente #${id}`;
+        }
+        if(!selectedDay){
+            this.getDate();
+        }
+        const note = {
+            id: id,
+            title: input,
+            note: "",
+            date: selectedDay
+        }
+        calendarDB.push(note);
+        storage("calendarDB", true, calendarDB);
+        this.render(new Date(selectedDay));
+        this.showNotes(selectedDay);
+    },
+    getDate(){
+        const today = new Date();
+        const todayStr = today.toISOString().split("T")[0];
+        selectedDay = todayStr;
+    },
+    showNotes(date){
+        const calendarDB = getDB("calendarDB");
+        notesTitle.textContent = `Lembretes de ${date}`;
+        notesList.innerHTML = '';
+
+        const notesOfDay = calendarDB.filter(note => note.date === date);
+
+        notesOfDay.forEach(note => {
+            const noteDiv = document.createElement('div');
+            noteDiv.classList.add("noteItem");
+            noteDiv.textContent = note.title + (note.note ? `: ${note.note}` : '');
+
+            noteDiv.addEventListener('click', () => {
+                const input = prompt("Digite sua nota:", note.note || "");
+                if(input !== null){
+                    note.note = input;
+                    storage("calendarDB", true, calendarDB);
+                    this.showNotes(date);
+                    this.render(new Date(date));
+                }
+            });
+
+            notesList.appendChild(noteDiv);
+        });
+    }
 }
 
 const achievements = {
@@ -705,6 +810,32 @@ const loadPage = {
         selectedPage(todoPageStr);
         pageTitle.innerHTML = "Tarefas";
         addBtn.addEventListener("click", () => {tasks.add();});
+    },
+    calendar(){
+        selectedP = 4;
+        build.calendar();
+        selectedPage(calendarPageStr);
+        pageTitle.innerHTML = "Calendário";
+        daysContainer = document.getElementById('days');
+        monthYear = document.getElementById('monthYear');
+        prevBtn = document.getElementById('prev');
+        nextBtn = document.getElementById('next');
+        notesPanel = document.getElementById("notesPanel");
+        notesTitle = document.getElementById("notesTitle");
+        notesList = document.getElementById("notesList");
+        calendar.render(currentDate);
+        prevBtn.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            calendar.render(currentDate);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            calendar.render(currentDate);
+        });
+
+        addBtn.addEventListener("click", () => {calendar.add(); this.calendar();});
+
     }
 }
 
@@ -860,3 +991,4 @@ homePageStr.addEventListener("click", () => {loadPage.home();});
 cardPageStr.addEventListener("click", () => {loadPage.cards();});
 notePageStr.addEventListener("click", () => {loadPage.notes();});
 todoPageStr.addEventListener("click", () => {loadPage.todo();});
+calendarPageStr.addEventListener("click", () => {loadPage.calendar();});

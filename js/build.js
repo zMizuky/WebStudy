@@ -263,5 +263,64 @@ const build = {
         divTop.appendChild(leftDiv);
         divTop.appendChild(rightDiv);
         contentArea.appendChild(addBtn);
+    },
+    calendar(){
+        contentArea.innerHTML = "";
+
+        const pageTitle = document.createElement("p");
+        const rightDiv = document.createElement("div");
+        const addBtn = document.createElement("div");
+        const calendarContainer = document.createElement("div");
+        const calendarHeader = document.createElement("div");
+        const prevBtn = document.createElement("button");
+        const monthYear = document.createElement("h2");
+        const nextBtn = document.createElement("button");
+        const weekdays = document.createElement("div");
+        weekdays.classList.add("weekdays");
+        ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(day => {
+            const dayDiv = document.createElement("div");
+            dayDiv.textContent = day;
+            weekdays.appendChild(dayDiv);
+        });
+        const days = document.createElement("div");
+
+        const notesList = document.createElement("div");
+        const notesTitle = document.createElement("h3");
+        const notesPanel = document.createElement("div");
+
+        addBtn.innerHTML = "Adicionar";
+        
+
+        pageTitle.id = "pageTitle";
+        rightDiv.id = "rightDiv";
+        calendarContainer.classList.add("calendar-container");
+        calendarHeader.classList.add("calendar-header");
+        prevBtn.id = "prev";
+        nextBtn.id = "next";
+        monthYear.id = "monthYear";
+        days.classList.add("days");
+        days.id = "days";
+        addBtn.id = "addBtn";
+        notesList.id = "notesList";
+        notesPanel.id = "notesPanel";
+        notesTitle.id = "notesTitle";
+
+        prevBtn.innerHTML = "◀";
+        nextBtn.innerHTML = "▶";
+
+        contentArea.appendChild(pageTitle);
+        contentArea.appendChild(rightDiv);
+        rightDiv.appendChild(calendarContainer);
+        calendarContainer.appendChild(calendarHeader);
+        calendarHeader.appendChild(prevBtn);
+        calendarHeader.appendChild(monthYear);
+        calendarHeader.appendChild(nextBtn);
+        calendarContainer.appendChild(weekdays);
+        calendarContainer.appendChild(days);
+        calendarContainer.appendChild(notesPanel);
+        notesPanel.appendChild(notesTitle);
+        notesPanel.appendChild(notesList);
+
+        contentArea.appendChild(addBtn);
     }
 }
