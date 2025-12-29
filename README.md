@@ -54,6 +54,11 @@ Ele combina técnicas de estudo, sistema de progresso, conquistas desbloqueávei
 
 ---
 
+### Calendário  
+- Função de lembrentes de acordo com o dia no calendário
+
+---
+
 ## 🧩 **Tecnologias Usadas**
 - **JavaScript Puro (Vanilla JS)**  
 - **HTML & CSS**  
