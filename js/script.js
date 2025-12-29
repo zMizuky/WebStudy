@@ -52,7 +52,7 @@ const calendar = {
         const month = date.getMonth();
         const calendarDB = getDB("calendarDB");
 
-        monthYear.textContent = date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+        monthYear.textContent = date.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
 
         const firstDay = new Date(year, month, 1).getDay();
         const lastDay = new Date(year, month + 1, 0).getDate();
